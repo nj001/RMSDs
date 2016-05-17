@@ -29,15 +29,25 @@ GvAs = sorted(GvAs)
 conv_GvA_ls.append(GvAs)
 conv_GvA_ls.append(conversion)
 print conv_GvA_ls
+symmetrical_ph = False
 
 for x in range(len(GvAs)):
+	
 	GvA = conv_GvA_ls[0][x]
 	methyl_subs = GvA[:-22]
+	
+	if methyl_subs in symm:
+		symmetrical_ph = True
+	else:
+		symmetrical_ph = False
+	
 	conv = conv_GvA_ls[1][x]
 	f = open(GvA,'r')  #coordinate file to parse (mol2 format)
 	atom_conv = open(ATOM_conv_dir+conv,'r')  #file listing which atoms are which for vina vs GOLD output
+	
 	#### PARSE FILE FOR ATOM COORDINATES ####
 	for line in f:
+	
 		#read only the relevant lines in the file (parsing between the 
 		#start of atom list and start of bond list)
 		if line.startswith("@<TRIPOS>BOND"):
@@ -70,18 +80,23 @@ for x in range(len(GvAs)):
 			no_atoms += 1
 			v=line.split()
 			tbl[int(v[1])]=int(v[0])
+	
 	print 'Gva = ',GvA, 'conv = ',conv,'no_atoms = ', no_atoms	
 		
 	with open('rmsds_'+GvA[:-9]+'.txt','w') as outfile:
+		
 		header1 = ("#",GvA[:-9],'\n')
 		header2 = ('#VINA GOLD_chimera GOLD_soln RMSD(A)\n')
+		
 		outfile.writelines(header1)
 		outfile.writelines(header2)
+		
 		for i in range(1,(no_vina_sols)): #iterate vina results
 			for j in range((no_vina_sols),(no_vina_sols+50)): #iterate gold results
 				for key in tbl: #iterate vina result atoms
 					b = tbl[key]
 					a = key
+					
 					if not dd[i][a]['atom_type'] == 'H':
 						for l in ['x','y','z']:
 							euc1 += (dd[i][a][l]-dd[j][b][l])*(dd[i][a][l]-dd[j][b][l])
