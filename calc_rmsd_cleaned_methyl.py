@@ -16,9 +16,9 @@ euc_tot = 0
 rmsd = 0
 no_atoms = 0
 count = 1
-#gold_soln_no = [1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,41,42,43,44,45,46,47,48,49,5,50,6,7,8,9]
 out_dir = "/Users/nj001/Documents/Docking/201604/20160425/flex_analysis/open_3/"
 ATOM_conv_dir = ("/Users/nj001/Documents/Docking/ATOM_conversion_files/methyl_substituted_compounds_noH/")
+symm = ['4MP','26MP','35MP','2356MP','23456MP']
 
 os.chdir(ATOM_conv_dir)
 conversion = [f for f in os.listdir(".") if f.startswith("ATOM_conversion_")]
@@ -32,6 +32,7 @@ print conv_GvA_ls
 
 for x in range(len(GvAs)):
 	GvA = conv_GvA_ls[0][x]
+	methyl_subs = GvA[:-22]
 	conv = conv_GvA_ls[1][x]
 	f = open(GvA,'r')  #coordinate file to parse (mol2 format)
 	atom_conv = open(ATOM_conv_dir+conv,'r')  #file listing which atoms are which for vina vs GOLD output
